@@ -1,19 +1,60 @@
 .App {
   color: white;
-}
-
-.logo {
-  animation: logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+  display: grid;
+  grid-template:
+    'header  header header'
+    'pyramid stats .'
+    'buttons buttons buttons'
 }
 
 .header {
   margin-left: 20px;
   font-size: 14pt;
   color: white;
+  grid-area: header;
 }
 
-.link {
-  color: #b318f0;
+.pyramid {
+  grid-area: pyramid;
+}
+
+.stats {
+  grid-area: stats;
+}
+
+.bottomButtons {
+  margin: 20px;
+  grid-area: buttons;
+}
+
+button.red {
+  background-color: rgb(228, 72, 72);
+}
+
+button.red:hover {
+  background-color: rgb(175, 45, 45);
+}
+
+button.red:active {
+  background-color: rgb(119, 29, 29);
+}
+
+button {
+  transition: 0.5s ease;
+  will-change: background-color;
+  border-radius: 10px;
+  padding: 15px 30px;
+  font-size: 14pt;
+  border: solid black 2px;
+  background-color: lightgray;
+}
+
+button:hover {
+  border-radius: 7px;
+  background-color: rgb(170, 170, 170);
+}
+
+button:active {
+  border-radius: 2px;
+  background-color: rgb(126, 126, 126);
 }

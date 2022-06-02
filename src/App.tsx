@@ -1,15 +1,15 @@
-import type { Component } from 'solid-js';
-import { createSignal, onCleanup, createMemo } from "solid-js";
+import { Component, createSignal } from 'solid-js';
 
-import logo from './logo.svg';
-import { Pyramid } from './components/pyramid'
+import { Pyramid } from './components/Pyramid'
+import { Stats } from './components/Stats';
 import styles from './App.module.css';
+import { BottomButtons } from './components/BottomButtons';
 
 export enum Gender { Male, Female }
 
-class Cohort {
+export class Cohort {
 
-  constructor(age: number, gender: Gender, population: number = 100) {
+  constructor(age: number, gender: Gender, population: number = Math.round(Math.random() * 1000)) {
     this.age = age;
     this.population = population;
     this.gender = gender;
@@ -18,58 +18,47 @@ class Cohort {
   gender: Gender;
   age: number;
   population: number;
+
+  getTotalPopulation(gender: Gender, cohorts: Array<Cohort>): number {
+    let total = 0;
+    for (let cohort in cohorts) {
+      total += cohorts[cohort].population;
+    }
+    return total;
+  }
+
+  percentage(cohorts: Array<Cohort>): number {
+    return this.population / this.getTotalPopulation(this.gender, cohorts) * 100;
+  }
 }
 
 const App: Component = () => {
 
-  const [people, setPeople] = createSignal([
-    new Cohort(0, Gender.Male),
-    new Cohort(0, Gender.Female),
-    new Cohort(5, Gender.Male),
-    new Cohort(5, Gender.Female),
-    new Cohort(10, Gender.Male),
-    new Cohort(10, Gender.Female),
-    new Cohort(15, Gender.Male),
-    new Cohort(15, Gender.Female),
-    new Cohort(20, Gender.Male),
-    new Cohort(20, Gender.Female),
-    new Cohort(25, Gender.Male),
-    new Cohort(25, Gender.Female),
-    new Cohort(30, Gender.Male),
-    new Cohort(30, Gender.Female),
-    new Cohort(35, Gender.Male),
-    new Cohort(35, Gender.Female),
-    new Cohort(40, Gender.Male),
-    new Cohort(40, Gender.Female),
-    new Cohort(45, Gender.Male),
-    new Cohort(45, Gender.Female),
-    new Cohort(50, Gender.Male),
-    new Cohort(50, Gender.Female),
-    new Cohort(55, Gender.Male),
-    new Cohort(55, Gender.Female),
-    new Cohort(60, Gender.Male),
-    new Cohort(60, Gender.Female),
-    new Cohort(65, Gender.Male),
-    new Cohort(65, Gender.Female),
-    new Cohort(70, Gender.Male),
-    new Cohort(70, Gender.Female),
-    new Cohort(75, Gender.Male),
-    new Cohort(75, Gender.Female),
-    new Cohort(80, Gender.Male),
-    new Cohort(80, Gender.Female),
-    new Cohort(85, Gender.Male),
-    new Cohort(85, Gender.Female),
-    new Cohort(90, Gender.Male),
-    new Cohort(90, Gender.Female),
-    new Cohort(95, Gender.Male),
-    new Cohort(95, Gender.Female),
-  ]);
-  const population = createMemo(() => getPopulation())
+  function getPeople(): Array<Cohort> {
+    let list: Array<Cohort> = [];
+    [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95].map((n) => {
+      list.push(new Cohort(n, Gender.Male))
+      list.push(new Cohort(n, Gender.Female))
+    })
+    return list;
+  }
 
-  function getPopulation():number {
+  const [people, setPeople] = createSignal(getPeople());
+
+  function getPopulation(): number {
     var i = 0;
-    for(var cohort in people()) {
+    for (var cohort in people()) {
       i += people()[cohort].population;
+    }
+    return i;
+  }
+
+  function getPopulationInAgeRange(min: number, max: number): number {
+    var i = 0;
+    for (var cohort in people()) {
+      if (people()[cohort].age >= min && people()[cohort].age <= max) {
+        i += people()[cohort].population;
+      }
     }
     return i;
   }
@@ -80,6 +69,12 @@ const App: Component = () => {
         <h1>Popusim™</h1>
       </header>
       <Pyramid people={people()} />
+      <Stats people={people()}
+       population={getPopulation()} 
+       youngPopulation={getPopulationInAgeRange(0, 15)}
+       workingPopulation={getPopulationInAgeRange(20, 60)}
+       retiredPopulation={getPopulationInAgeRange(65, 95)} />
+      <BottomButtons />
     </div>
   );
 };
