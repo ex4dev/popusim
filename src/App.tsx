@@ -9,7 +9,7 @@ export enum Gender { Male, Female }
 
 export class Cohort {
 
-  constructor(age: number, gender: Gender, population: number = Math.round(Math.random() * 1000)) {
+  constructor(age: number, gender: Gender, population: number = age == 0 ? Math.round(Math.random() * 1000) : 0) {
     this.age = age;
     this.population = population;
     this.gender = gender;
@@ -43,7 +43,7 @@ const App: Component = () => {
     return list;
   }
 
-  const [people, setPeople] = createSignal(getPeople());
+  const [people, setPeople] = createSignal(getPeople(), {equals: false});
 
   function getPopulation(): number {
     var i = 0;
@@ -63,12 +63,30 @@ const App: Component = () => {
     return i;
   }
 
+  const tick = function() {
+    console.log("ticking")
+    var ppl = people();
+    for(let index in ppl) {
+      let cohort = ppl[index];
+      let aging = Math.ceil(cohort.population / 5); // 1/5 of the cohort moves up one year because they are tracked in 5-year intervals
+      if(aging === 0) continue;
+      cohort.population -= aging;
+      let next = ppl[+index + 2];
+      if(next !== undefined) {
+        next.population += aging;
+      }
+    }
+    setPeople(ppl);
+  }
+
+  setInterval(tick, 1000);
+
   return (
     <div class={styles.App}>
       <header class={styles.header}>
         <h1>Popusim™</h1>
       </header>
-      <Pyramid people={people()} />
+      <Pyramid people={ people() } />
       <Stats people={people()}
        population={getPopulation()} 
        youngPopulation={getPopulationInAgeRange(0, 15)}
