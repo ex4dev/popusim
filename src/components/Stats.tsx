@@ -1,23 +1,31 @@
-import { Component } from "solid-js"
+import { Component, createMemo } from "solid-js"
 import { Cohort } from "../App"
 import styles from "./../App.module.css"
 
 export const Stats: Component = (props: any | { people: Array<Cohort>, population: number }) => {
+
+    const avgAge = createMemo(() => {
+        let total = 0, n = 0;
+        for (const cohort of props.people) {
+            total += cohort.age * cohort.population;
+            n += cohort.population;
+        }
+        return Math.round(total / n * 100) / 100;
+    })
+
     return (
         <ul class={styles.stats}>
-            <li>Total Population: {props.population.toLocaleString('en-US')}</li>
+            <li>Total Population: {props.population.toLocaleString('en-US')} {
+                props.populationTrend == 0 ? '➖' : (props.populationTrend == 1 ? '⬆️' : '⬇️')
+            }</li>
             <ul>
                 <li>Young Population: {props.youngPopulation.toLocaleString('en-US')}</li>
                 <li>Working Population: {props.workingPopulation.toLocaleString('en-US')}</li>
                 <li>Retired Population: {props.retiredPopulation.toLocaleString('en-US')}</li>
             </ul>
-            <li>Crude Birth Rate:</li>
-            <li>Crude Death Rate:</li>
-            <ul>
-                <li>Natural Causes:</li>
-                <li>Preventable Deaths:</li>
-            </ul>
-            <li>Total Fertility Rate:</li>
+            <li>Crude Birth Rate: {(props.births / (props.population / 1000)).toPrecision(4)} </li>
+            <li>Crude Death Rate: {(props.deaths / (props.population / 1000)).toPrecision(4)} </li>
+            <li>Average Age: {avgAge()}</li>
         </ul>
     )
 }
