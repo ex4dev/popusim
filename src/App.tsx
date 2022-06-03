@@ -3,9 +3,11 @@ import { Component, createSignal, onCleanup, createMemo } from 'solid-js';
 import { Pyramid } from './components/Pyramid'
 import { Stats } from './components/Stats';
 import { NewsTicker } from './components/NewsTicker';
-import styles from './App.module.css';
+import { Info } from './components/Info';
 import { Events } from './components/BottomButtons';
 import { NumberComponent } from './components/NumberComponent';
+
+import styles from './App.module.css';
 
 export enum Gender { Male, Female }
 
@@ -182,9 +184,9 @@ const App: Component = () => {
     const totalEmigrants = emigrants() * Math.random();
     for (const cohort of people()) {
       if (cohort.age >= 20 && cohort.age <= 30) {
-        cohort.population += cohort.gender == Gender.Female ? totalImmigrants * 0.25 : totalImmigrants;
+        cohort.population += cohort.gender == Gender.Female ? totalImmigrants * 0.5 : totalImmigrants;
       } else if (cohort.age >= 15 && cohort.age <= 25) {
-        cohort.population -= cohort.gender == Gender.Female ? totalEmigrants * 0.25 : totalEmigrants;
+        cohort.population -= cohort.gender == Gender.Female ? totalEmigrants * 0.5 : totalEmigrants;
       }
     }
 
@@ -255,6 +257,7 @@ const App: Component = () => {
             <NumberComponent number={emigrants()} setter={setEmigrants} increment={100} name="Emigrants" />
             <NumberComponent number={imr()} setter={setIMR} increment={0.05} name="Infant Mortality" />
           </div>
+          <Info />
         </div>
       </Show>
       <Show when={!isAlive()}>

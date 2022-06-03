@@ -5,6 +5,7 @@
     'header header header'
     'pyramid stats numbers'
     'buttons buttons buttons'
+    'info info info'
 }
 
 .header {
@@ -20,6 +21,11 @@
 
 .stats {
   grid-area: stats;
+}
+
+.info {
+  grid-area: info;
+  margin-left: 20px;
 }
 
 .bottomButtons {
