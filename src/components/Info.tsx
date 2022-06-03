@@ -23,8 +23,8 @@ export const Info: Component = () => {
             <b>Shortcomings:</b>
             <p>
                 Crude birth rate (CBR) and crude death rate (CDR) can give some useful infrmation about a country,
-                but these metrics typically don't tell the full story. This is why composite metrics like total
-                fertility rate (TFR) are used. This metric measures the amount of children born per woman,
+                but these metrics typically don't tell the full story. This is why composite metrics like <b>total
+                fertility rate</b> (TFR) are used. This metric measures the amount of children born per woman,
                 assuming every woman lives through her child-bearing years.
             </p>
             <h1>What do different pyramid shapes mean?</h1>
