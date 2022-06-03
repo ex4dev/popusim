@@ -35,6 +35,7 @@ export const Info: Component = () => {
             <p><b>Asymmetric Shape</b>: Asymmetry can represent many things. For example, in the United Arab Emirates, there is a much greater
                 population of men than women because of high demand for immigrant construction jobs in the country. Most of these people are
                 temporary workers who will return home someday.</p>
+            <p>Built with <a href="https://www.solidjs.com/">SolidJS</a> &middot; View source on <a href="//github.com/tylerswanson2/popusim">GitHub</a> &middot; See <a href="https://www.populationpyramid.net/">real-world examples</a> of population pyramids.</p>
         </div >
     )
 }
