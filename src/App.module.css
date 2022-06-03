@@ -2,9 +2,10 @@
   color: white;
   display: grid;
   grid-template:
-    'header  header header'
-    'pyramid stats .'
+    'header header header'
+    'pyramid stats numbers'
     'buttons buttons buttons'
+    'info info info'
 }
 
 .header {
@@ -22,9 +23,25 @@
   grid-area: stats;
 }
 
+.info {
+  grid-area: info;
+  margin-left: 20px;
+}
+
 .bottomButtons {
   margin: 20px;
   grid-area: buttons;
+}
+
+.newsTicker {
+  color: white;
+  font-size: 14pt;
+  display: block;
+  width: 50%;
+}
+
+.numbers {
+  grid-area: numbers;
 }
 
 button.red {
