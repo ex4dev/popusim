@@ -7,7 +7,5 @@ export default defineConfig({
     target: 'esnext',
     polyfillDynamicImport: false,
   },
-  server: {
-    base: '/popusim/'
-  }
+  base: '/popusim/'
 });
