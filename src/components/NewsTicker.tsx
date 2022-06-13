@@ -1,8 +1,10 @@
 import { Component } from "solid-js"
-import styles from "./../App.module.css"
+import styles from "./../assets/styles/NewsTicker.module.css"
 
 export const NewsTicker: Component = (props) => {
     return (
-        <marquee direction="left" class={styles.newsTicker}>{ props.newsStory }</marquee>
+        <div class={styles.newsTicker}>
+            <marquee direction="left" class={styles.newsTicker}>{props.newsStory || <br />}</marquee>
+        </div>
     )
 }

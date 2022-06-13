@@ -1,0 +1,32 @@
+.App {
+  color: white;
+  display: grid;
+  grid-template:
+    'header header header'
+    'pyramid stats numbers'
+    'buttons buttons buttons'
+    'info info info'
+}
+
+a {
+  color: #1792ef;
+}
+
+a:visited {
+  color: #543ff7;
+}
+
+.header {
+  margin-left: 20px;
+  font-size: 14pt;
+  color: white;
+  grid-area: header;
+}
+
+.stats {
+  grid-area: stats;
+}
+
+.numbers {
+  grid-area: numbers;
+}

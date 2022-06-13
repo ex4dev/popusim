@@ -1,4 +1,4 @@
-import { Component, createSignal, onCleanup, createMemo } from 'solid-js';
+import { Component, Show, createSignal, onCleanup, createMemo } from 'solid-js';
 
 import { Pyramid } from './components/Pyramid'
 import { Stats } from './components/Stats';
@@ -7,7 +7,7 @@ import { Info } from './components/Info';
 import { Events } from './components/BottomButtons';
 import { NumberComponent } from './components/NumberComponent';
 
-import styles from './App.module.css';
+import styles from './assets/styles/App.module.css';
 
 export enum Gender { Male, Female }
 
@@ -56,16 +56,19 @@ const App: Component = () => {
     return list;
   }
 
+  function getStartingEventsList (): Event[] {
+    return []
+  };
+
   const [people, setPeople] = createSignal(getPeople(), { equals: false });
   const [year, setYear] = createSignal(2022)
   const [populationTrend, setPopulationTrend] = createSignal(1);
   const [newsStory, setNewsStory] = createSignal("");
-  const [events, setEvents] = createSignal([]);
+  const [events, setEvents] = createSignal(getStartingEventsList());
 
   // Statistics
   const [births, setBirths] = createSignal(0);
   const [deaths, setDeaths] = createSignal(0);
-  const [childbearers, setChildbearers] = createSignal(0);
 
   // Values related to population change over time
   const [deathRate, setDeathRate] = createSignal(0.01);
@@ -102,13 +105,11 @@ const App: Component = () => {
     let births = 0, deaths = 0;
     for (const event of events()) {
       event.duration--;
-      console.log("processing event " + event);
       if (event.duration <= 0) {
         let e: Array<Event> = events();
         e.splice(e.indexOf(event), 1);
         setEvents(e);
         setNewsStory("");
-        console.log(`Event ended: ${event}; type ${event.type}`)
 
         if (event.type == EventType.War) {
           setEvent(EventType.BabyBoom, 10);
@@ -190,12 +191,12 @@ const App: Component = () => {
       }
     }
 
-    // Process the current event(s).
+    // Process the current event(s)
     const { eventBirths, eventDeaths } = processEvents();
     births += eventBirths;
     deaths += eventDeaths;
 
-    // Make sure all cohorts never have a negative number of people or a decimal number of people.
+    // Make sure all cohorts never have a negative or decimal number of people
     for (const cohort of people()) {
       cohort.population = Math.floor(cohort.population < 0 ? 0 : cohort.population);
     }
@@ -208,11 +209,11 @@ const App: Component = () => {
     setPopulationTrend(Math.abs(diff) < 5000 ? 0 : (diff > 0 ? 1 : -1))
     setBirths(births);
     setDeaths(deaths);
-    setChildbearers(childbearers);
   }
 
   const isAlive = createMemo(() => {
     for (const cohort of people()) {
+      // Return true if any cohorts have a population.
       if (cohort.population > 0) return true;
     }
     return false;
@@ -239,8 +240,10 @@ const App: Component = () => {
             retiredPopulation={getPopulationInAgeRange(65, 95)}
             births={births()}
             deaths={deaths()}
-            childbearers={childbearers()} />
-          <Events people={people()}
+          />
+          <Events class={styles.bottomButtons}
+            people={people()}
+            population={getPopulation()}
             setEvent={setEvent}
             tick={tick}
             setBirthRate={setBirthRate}
@@ -248,8 +251,7 @@ const App: Component = () => {
             setImmigration={setImmigrants}
             setEmigration={setEmigrants}
             setIMR={setIMR}
-            population={getPopulation()}
-             />
+          />
           <div class={styles.numbers}>
             <NumberComponent number={birthRate()} setter={setBirthRate} increment={0.01} name="Birth Rate" />
             <NumberComponent number={deathRate()} setter={setDeathRate} increment={0.01} name="Death Rate" />
@@ -266,6 +268,7 @@ const App: Component = () => {
             <h1>You Failed!</h1>
             <p>Somehow you managed to make your whole country die. Great job!</p>
           </header>
+          <Info />
         </div>
       </Show>
     </>

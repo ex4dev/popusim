@@ -1,0 +1,15 @@
+.button {
+    padding: 8px;
+    margin: 4px;
+    font-size: 14pt;
+    border: solid black 2px;
+    background-color: lightgray;
+}
+
+.button:hover {
+    background-color: rgb(170, 170, 170);
+}
+
+.button:active {
+    background-color: rgb(126, 126, 126);
+}

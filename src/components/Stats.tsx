@@ -1,6 +1,6 @@
 import { Component, createMemo } from "solid-js"
 import { Cohort } from "../App"
-import styles from "./../App.module.css"
+import styles from "./../assets/styles/App.module.css"
 
 export const Stats: Component = (props: any | { people: Array<Cohort>, population: number }) => {
 

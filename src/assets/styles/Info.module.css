@@ -1,0 +1,13 @@
+.info {
+    grid-area: info;
+    margin-left: 20px;
+}
+
+img.solidLogo, img.githubLogo {
+    display: inline;
+    height: 1em;
+}
+
+.credits {
+    font-size: 16pt;
+}

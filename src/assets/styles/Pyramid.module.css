@@ -1,0 +1,31 @@
+.pyramid {
+    grid-area: pyramid;
+    display: block;
+    margin: auto;
+    min-width: 400px;
+}
+
+.bar {
+    transition: 0.4s ease;
+    will-change: width;
+    height: 20px;
+    display: block;
+}
+
+.bar.male {
+    background: lightblue;
+    margin-left: auto;
+    text-align: left;
+}
+.bar.female {
+    background: pink;
+    text-align: right;
+}
+
+.barLabel {
+    color: black;
+}
+
+.cohortLabel {
+    text-align: center;
+}

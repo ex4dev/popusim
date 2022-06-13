@@ -1,6 +1,6 @@
-import { Component, For, Show, createMemo, Accessor, Index } from "solid-js";
+import { Component, Show, createMemo, Accessor, Index } from "solid-js";
 import { Gender, Cohort } from "../App";
-import styles from './../App.module.css';
+import styles from "./../assets/styles/Pyramid.module.css"
 
 export const Pyramid: Component = (props: any | { people: Array<Cohort> }) => {
 
@@ -16,47 +16,43 @@ export const Pyramid: Component = (props: any | { people: Array<Cohort> }) => {
         return temp;
     });
 
-    const cohortsByAge = createMemo(() => Object.keys(cohorts()).reverse())
+    // Get all keys of the cohorts map, reverse them, and convert them from strings to numbers.
+    const cohortsByAge = createMemo(() => Object.keys(cohorts()).reverse().map((index) => +index));
 
     const maxWidth = createMemo(() => {
         let temp = 0;
         for (let i in props.people) {
-            temp = Math.max(temp, props.people[i].percentage(props.people))
+            temp = Math.max(temp, props.people[i].percentage(props.people));
         }
         return temp;
     });
 
+    const getClassName = (cohort: Cohort) => ["male", "female"][cohort.gender];
+
+    const getTooltipText = (cohort: Cohort) => `${["Men", "Women"][cohort.gender]} aged ${cohort.age}-${+cohort.age + 5}\n` +
+        `${cohort.percentage(props.people).toPrecision(5)}% of total\n` +
+        `${cohort.population.toLocaleString("en-US")} people`
+
     return (
-        <table class={styles.pyramid} style={{ display: "block", "row-gap": "10px", "margin": "auto", "min-width": "400px" }}>
+        <table class={styles.pyramid}>
             <Index each={cohortsByAge()}>{(ageGroup: Accessor<number>, index: number) =>
                 <tr>
                     <Index each={cohorts()[ageGroup()]}>{(cohort: Accessor<Cohort>, i: number) =>
                         <>
-                            <td title={
-                                ["Men", "Women"][cohort().gender] + " aged " + cohort().age + "-" + (+cohort().age + 5) + "\n" +
-                                cohort().percentage(props.people).toPrecision(5) + "% of total\n" +
-                                cohort().population.toLocaleString("en-US") + " people"
-                            }>
-                                <div class="bar" style={{
-                                    background: cohort().gender == Gender.Male ? "lightblue" : "pink",
-                                    width: (cohort().percentage(props.people) / maxWidth() * 150) + "px",
-                                    height: "20px",
-                                    display: "block",
-                                    "margin-left": cohort().gender == Gender.Male ? "auto" : "initial",
-                                    "text-align": cohort().gender == Gender.Male ? "left" : "right",
-                                    "transition": "0.4s ease",
-                                    "will-change": "width"
+                            <td title={getTooltipText(cohort())}>
+                                <div class={`${styles.bar} ${styles[getClassName(cohort())]}`} style={{
+                                    width: (cohort().percentage(props.people) / maxWidth() * 150) + "px"
                                 }}>
                                     <Show when={cohort().percentage(props.people) > 1}>
-                                        <span style={{ color: "black" }}>
+                                        <span class={styles.barLabel}>
                                             {Math.round(cohort().percentage(props.people) * 10) / 10}%
                                         </span>
                                     </Show>
                                 </div>
                             </td>
                             <Show when={i === 0}>
-                                <td style={{ "text-align": "center" }}>
-                                    <span class="bar-label">{ageGroup} - {+ageGroup() + 5}</span>
+                                <td class={styles.cohortLabel}>
+                                    {ageGroup} - {+ageGroup() + 5}
                                 </td>
                             </Show>
                         </>
