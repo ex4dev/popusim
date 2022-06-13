@@ -1,4 +1,4 @@
-import { Component, Show, createSignal, onCleanup, createMemo } from 'solid-js';
+import { Component, Show, createSignal, onCleanup, createMemo, createEffect } from 'solid-js';
 
 import { Pyramid } from './components/Pyramid'
 import { Stats } from './components/Stats';
@@ -56,15 +56,11 @@ const App: Component = () => {
     return list;
   }
 
-  function getStartingEventsList (): Event[] {
-    return []
-  };
-
   const [people, setPeople] = createSignal(getPeople(), { equals: false });
   const [year, setYear] = createSignal(2022)
   const [populationTrend, setPopulationTrend] = createSignal(1);
   const [newsStory, setNewsStory] = createSignal("");
-  const [events, setEvents] = createSignal(getStartingEventsList());
+  const [events, setEvents] = createSignal<Event[]>([]);
 
   // Statistics
   const [births, setBirths] = createSignal(0);
@@ -77,40 +73,23 @@ const App: Component = () => {
   const [emigrants, setEmigrants] = createSignal(200);
   const [imr, setIMR] = createSignal(0.55);
 
-  const setEvent = (type: EventType, ticks: number) => {
-    let e: Array<Event> = events();
-    e.push({ type: type, duration: ticks });
-    setEvents(e);
-  }
+  const setEvent = (type: EventType, ticks: number) => events().push({ type: type, duration: ticks });
 
-  function getPopulation(): number {
-    var i = 0;
-    for (var cohort in people()) {
-      i += people()[cohort].population;
-    }
-    return i;
-  }
+  const getPopulation = createMemo(() => people().reduce((total, current) => total + current.population, 0))
 
-  function getPopulationInAgeRange(min: number, max: number): number {
-    var i = 0;
-    for (var cohort in people()) {
-      if (people()[cohort].age >= min && people()[cohort].age <= max) {
-        i += people()[cohort].population;
-      }
-    }
-    return i;
-  }
+  const getPopulationInAgeRange = (min: number, max: number) => people()
+    .filter((cohort) => cohort.age >= min && cohort.age <= max)
+    .reduce((total, current) => total + current.population, 0);
 
   const processEvents = () => {
     let births = 0, deaths = 0;
     for (const event of events()) {
-      event.duration--;
-      if (event.duration <= 0) {
-        let e: Array<Event> = events();
-        e.splice(e.indexOf(event), 1);
-        setEvents(e);
+      event.duration--; // Remove one tick from the event's duration
+      if (event.duration <= 0) { // When the event reaches zero ticks, it ends
+        events().splice(events().indexOf(event), 1);
         setNewsStory("");
 
+        // After the war ends, a baby boom immediately starts
         if (event.type == EventType.War) {
           setEvent(EventType.BabyBoom, 10);
         }
@@ -142,7 +121,6 @@ const App: Component = () => {
     const previousPopulation = getPopulation();
     let births = 0;
     let deaths = 0;
-    let childbearers = 0;
 
     setYear(year() + 1)
 
@@ -172,7 +150,6 @@ const App: Component = () => {
         people()[0].population += birthRate() * cohort.population;
         people()[1].population += birthRate() * cohort.population;
         births += birthRate() * cohort.population * 2;
-        childbearers += (cohort.gender == Gender.Female) ? cohort.population : 0;
       }
       if (cohort.age == 0) {
         cohort.population *= (1 - imr() / 5);
@@ -198,7 +175,7 @@ const App: Component = () => {
 
     // Make sure all cohorts never have a negative or decimal number of people
     for (const cohort of people()) {
-      cohort.population = Math.floor(cohort.population < 0 ? 0 : cohort.population);
+      cohort.population = Math.floor(Math.max(cohort.population, 0));
     }
 
     // Force the array to update and cause components to re-render
@@ -211,15 +188,17 @@ const App: Component = () => {
     setDeaths(deaths);
   }
 
-  const isAlive = createMemo(() => {
-    for (const cohort of people()) {
-      // Return true if any cohorts have a population.
-      if (cohort.population > 0) return true;
-    }
-    return false;
-  });
+  const isAlive = createMemo(() => people().some((cohort) => cohort.population > 0));
 
-  const tickTimer = setInterval(tick, 750);
+  let tickTimer: number;
+  let [tickSpeed, setTickSpeed] = createSignal(7); // about 714ms per year
+
+  createEffect(() => {
+    clearInterval(tickTimer);
+    if (tickSpeed() > 0) {
+      tickTimer = setInterval(tick, 5000 / tickSpeed());
+    }
+  });
 
   onCleanup(() => clearInterval(tickTimer));
 
@@ -258,6 +237,7 @@ const App: Component = () => {
             <NumberComponent number={immigrants()} setter={setImmigrants} increment={100} name="Immigrants" />
             <NumberComponent number={emigrants()} setter={setEmigrants} increment={100} name="Emigrants" />
             <NumberComponent number={imr()} setter={setIMR} increment={0.05} name="Infant Mortality" />
+            <NumberComponent number={tickSpeed()} setter={setTickSpeed} increment={1} name="Simulation Speed" />
           </div>
           <Info />
         </div>
