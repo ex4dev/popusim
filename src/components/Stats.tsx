@@ -14,18 +14,21 @@ export const Stats: Component = (props: any | { people: Array<Cohort>, populatio
     })
 
     return (
-        <ul class={styles.stats}>
-            <li>Total Population: {props.population.toLocaleString('en-US')} {
-                props.populationTrend == 0 ? '➖' : (props.populationTrend == 1 ? '⬆️' : '⬇️')
-            }</li>
+        <div class={styles.stats}>
+            <h1>Stats</h1>
             <ul>
-                <li>Young Population: {props.youngPopulation.toLocaleString('en-US')}</li>
-                <li>Working Population: {props.workingPopulation.toLocaleString('en-US')}</li>
-                <li>Retired Population: {props.retiredPopulation.toLocaleString('en-US')}</li>
+                <li>Total Population: {props.population.toLocaleString('en-US')} {
+                    props.populationTrend == 0 ? '➖' : (props.populationTrend == 1 ? '⬆️' : '⬇️')
+                }</li>
+                <ul>
+                    <li>Young Population: {props.youngPopulation.toLocaleString('en-US')}</li>
+                    <li>Working Population: {props.workingPopulation.toLocaleString('en-US')}</li>
+                    <li>Retired Population: {props.retiredPopulation.toLocaleString('en-US')}</li>
+                </ul>
+                <li>Crude Birth Rate: {(props.births / (props.population / 1000)).toPrecision(4)} </li>
+                <li>Crude Death Rate: {(props.deaths / (props.population / 1000)).toPrecision(4)} </li>
+                <li>Average Age: {avgAge()}</li>
             </ul>
-            <li>Crude Birth Rate: {(props.births / (props.population / 1000)).toPrecision(4)} </li>
-            <li>Crude Death Rate: {(props.deaths / (props.population / 1000)).toPrecision(4)} </li>
-            <li>Average Age: {avgAge()}</li>
-        </ul>
+        </div>
     )
 }

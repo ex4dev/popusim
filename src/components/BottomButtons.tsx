@@ -7,7 +7,8 @@ export const Events: Component = (props: any) => {
 
     return (
         <div class={styles.bottomButtons}>
-            <h1>Policies and Actions</h1>
+            <h1>Policies</h1>
+            <p>Presets for some of the available settings.</p>
             <button class={styles.button} onclick={() => {
                 props.setBirthRate(0.06)
             }}>Pronatalist Policy</button>
@@ -21,10 +22,10 @@ export const Events: Component = (props: any) => {
             <button class={styles.button} onclick={() => {
                 props.setImmigration(100)
             }}>Closed-border Policy</button>
+            <h1>Actions</h1>
             <button class={`${styles.button} ${styles.red}`} onclick={() => {
                 props.setEvent(EventType.War, Math.floor(Math.random() * 5) + 3)
             }}>War</button>
-            <br />
             <button class={styles.button} onclick={() => {
                 for(let i = 0; i < 10; i++) { props.tick(); }
             }}>Skip 10 Years</button>

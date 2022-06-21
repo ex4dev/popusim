@@ -8,6 +8,7 @@ import { Events } from './components/BottomButtons';
 import { NumberComponent } from './components/NumberComponent';
 
 import styles from './assets/styles/App.module.css';
+import buttonStyles from "./assets/styles/BottomButtons.module.css"
 
 export enum Gender { Male, Female }
 
@@ -232,12 +233,21 @@ const App: Component = () => {
             setIMR={setIMR}
           />
           <div class={styles.numbers}>
+            <h1>Settings</h1>
             <NumberComponent number={birthRate()} setter={setBirthRate} increment={0.01} name="Birth Rate" />
             <NumberComponent number={deathRate()} setter={setDeathRate} increment={0.01} name="Death Rate" />
             <NumberComponent number={immigrants()} setter={setImmigrants} increment={100} name="Immigrants" />
             <NumberComponent number={emigrants()} setter={setEmigrants} increment={100} name="Emigrants" />
             <NumberComponent number={imr()} setter={setIMR} increment={0.05} name="Infant Mortality" />
             <NumberComponent number={tickSpeed()} setter={setTickSpeed} increment={1} name="Simulation Speed" />
+            <button class={`${buttonStyles.button} ${buttonStyles.red}`} onclick={() => {
+              setBirthRate(0.04);
+              setDeathRate(0.01);
+              setImmigrants(1000);
+              setEmigrants(200);
+              setIMR(0.55);
+              setTickSpeed(7);
+            }}>Reset All</button>
           </div>
           <Info />
         </div>
